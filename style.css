@@ -1,0 +1,24 @@
+@import url("/css/resumo.css");
+@import url("/css/sobremim.css");
+@import url("/css/projeto.css");
+@import url("/css/contato.css");
+
+:root {
+    --fonte-primaria: "Roboto", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    scroll-behavior: smooth;
+}
+
+html,
+body {
+    font-family: var(--fonte-primaria);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
