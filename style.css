@@ -21,7 +21,6 @@ body {
     font-family: var(--fonte-primaria);
     overflow-x: hidden;
     scroll-behavior: smooth;
-
 }
 
 .container__bg {
@@ -32,4 +31,8 @@ body {
     background-image: radial-gradient(rgba(0, 0, 0, 0.18) 2px, transparent 0);
     background-size: 30px 30px;
     background-position: -5px -5px
+}
+.bg__azul_container {
+    background: linear-gradient(to bottom, black, #001f3f, #005f8f);
+
 }
