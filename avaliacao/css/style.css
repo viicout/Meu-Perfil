@@ -32,3 +32,30 @@ body{background:radial-gradient(800px 300px at 10% 10%, rgba(139,92,255,0.06), t
   .day-card { background: #fff; border:1px solid #ddd; color:#000; padding:10px; margin-bottom:12px; }
   .table-custom thead th { background:#e9e9ff; color:#071029 !important; }
 }
+
+input, select, textarea {
+    color: #000 !important;          /* cor do texto */
+}
+
+input::placeholder, textarea::placeholder {
+    color: #6c757d !important;       /* cor suave para placeholder */
+}
+
+input:focus, textarea:focus, select:focus {
+    color: #000 !important;          /* garante que no foco o texto apareça */
+    background-color: #fff !important; /* fundo claro */
+}
+
+.history-item,
+.history-item * {
+    color: #000 !important;
+}
+
+.text-muted-light {
+  color: #cfcfcf !important; /* cinza claro visível no fundo escuro */
+}
+
+#historyList, #historyList * {
+  color: #e6e6e6 !important;
+}
+
