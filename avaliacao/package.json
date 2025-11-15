@@ -1,7 +1,12 @@
 {
-  "name": "meu-treino-ia",
+  "name": "treino-ia-web",
   "version": "1.0.0",
+  "description": "Aplicação web para gerar treinos com IA via API serverless no Vercel",
   "type": "module",
+  "scripts": {
+    "start": "vercel dev",
+    "vercel-build": "echo 'Build concluído'"
+  },
   "dependencies": {
     "@google/generative-ai": "latest"
   }
