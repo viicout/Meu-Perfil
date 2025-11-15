@@ -1,46 +1,73 @@
 // domRenderer.js
-// Renderiza o programa (tabelas) e histórico
+// Renderiza o programa (cards / acordeão) e histórico de forma robusta
 
 export function renderProgramToDom(containerEl, rec){
-  const prog = rec.program;
-  let html = `<div class="mb-2"><strong>${rec.form.name || 'Usuário anônimo'}</strong> <div class="text-muted small">${new Date(rec.createdAt).toLocaleString()} • ${rec.form.levelUsed} • ${rec.form.goal}</div></div>`;
-  prog.forEach(day => {
-    html += `<div class="day-card">`;
-    html += `<h5>${day.dayName}</h5>`;
+  // rec: { form: {...}, program: [ { dayName, mobility, warmup, main, stretch } ] }
+  const prog = rec.program || rec.treino || rec.plano || [];
+  let html = `<div class="mb-2"><strong>${rec.form?.name || 'Usuário anônimo'}</strong> <div class="text-muted-light small">${new Date(rec.createdAt || Date.now()).toLocaleString()} • ${rec.form?.levelUsed || ''} • ${rec.form?.goal || ''}</div></div>`;
 
-    html += `<div><strong>Mobilidade</strong><ul>`;
-    day.mobility.forEach(m => html += `<li>${m}</li>`);
-    html += `</ul></div>`;
+  // Use acordeão se houver vários dias
+  html += `<div class="accordion" id="accordionTreinos">`;
 
-    html += `<div><strong>Aquecimento</strong><ul>`;
-    day.warmup.forEach(w => html += `<li>${w}</li>`);
-    html += `</ul></div>`;
+  prog.forEach((day, idx) => {
+    const dayTitle = day.dayName || day.titulo || `Dia ${idx+1}`;
+    const mobility = day.mobility || day.mobilidade || [];
+    const warmup = day.warmup || day.aquecimento || [];
+    const main = day.main || day.treino || day.principal || [];
+    const stretch = day.stretch || day.alongamento || day.stretching || [];
 
-    html += `<div class="mt-2"><strong>Treino principal</strong><table class="table-custom w-100"><thead><tr><th>Exercício</th><th>Séries</th><th>Reps / Observação</th><th>Tipo</th></tr></thead><tbody>`;
-    day.main.forEach(ex => {
-      html += `<tr><td>${ex.name}</td><td>${ex.sets}</td><td>${ex.reps}</td><td>${ex.type === 'compound' ? 'Multiarticular' : 'Isolamento'}</td></tr>`;
-    });
-    html += `</tbody></table></div>`;
+    html += `
+      <div class="accordion-item workout-day">
+        <h2 class="accordion-header" id="heading${idx}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${idx}" aria-expanded="false" aria-controls="collapse${idx}">
+            ${dayTitle}
+          </button>
+        </h2>
+        <div id="collapse${idx}" class="accordion-collapse collapse" data-bs-parent="#accordionTreinos">
+          <div class="accordion-body">
+            <p class="section-title">Mobilidade</p>
+            <ul>${(mobility.length ? mobility : ['Sem informação']).map(i=>`<li>${i}</li>`).join('')}</ul>
 
-    html += `<div><strong>Alongamento</strong><ul>`;
-    day.stretching.forEach(s => html += `<li>${s}</li>`);
-    html += `</ul></div>`;
+            <p class="section-title">Aquecimento</p>
+            <ul>${(warmup.length ? warmup : ['Sem informação']).map(i=>`<li>${i}</li>`).join('')}</ul>
 
-    html += `</div>`;
+            <p class="section-title">Treino Principal</p>
+            <table class="table table-sm table-borderless table-custom">
+              <thead><tr><th>Exercício</th><th>Séries</th><th>Reps / Observações</th></tr></thead>
+              <tbody>
+                ${
+                  (main.length ? main : []).map(ex => {
+                    if (typeof ex === 'string') return `<tr><td>${ex}</td><td>-</td><td>-</td></tr>`;
+                    const name = ex.name || ex.nome || ex.exercise || '';
+                    const sets = ex.sets || ex.series || ex.series || '-';
+                    const reps = ex.reps || ex.repetitions || ex.range || '-';
+                    return `<tr><td>${name}</td><td>${sets}</td><td>${reps}</td></tr>`;
+                  }).join('')
+                }
+              </tbody>
+            </table>
+
+            <p class="section-title">Alongamento</p>
+            <ul>${(stretch.length ? stretch : ['Sem informação']).map(i=>`<li>${i}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>
+    `;
   });
 
-  html += `<div class="mt-2"><button id="exportProgramBtn" class="btn btn-sm btn-outline-light">Exportar (JSON)</button></div>`;
-
+  html += `</div>`; // accordion
   containerEl.innerHTML = html;
 }
 
 export function renderHistory(containerEl, history){
-  if(!history || !history.length){ containerEl.innerHTML = `<p class="text-muted">Sem histórico.</p>`; return; }
+  if(!history || !history.length){ containerEl.innerHTML = `<p class="text-muted-light">Sem histórico.</p>`; return; }
   let html = '';
   history.forEach(rec => {
-    html += `<div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-secondary bg-opacity-10 rounded">`;
-    html += `<div><strong>${rec.form.name || 'Usuário'}</strong><div class="text-muted small">${new Date(rec.createdAt).toLocaleString()} • ${rec.form.levelUsed} • ${rec.form.goal}</div></div>`;
-    html += `<div class="d-flex gap-2"><button class="btn btn-sm btn-outline-light" data-id="${rec.id}" data-action="view">Ver</button><button class="btn btn-sm btn-outline-light" data-id="${rec.id}" data-action="export">Exportar</button><button class="btn btn-sm btn-outline-light" data-id="${rec.id}" data-action="delete">Apagar</button></div>`;
+    const date = new Date(rec.createdAt || rec.data || Date.now()).toLocaleString();
+    html += `<div class="history-item">`;
+    html += `<div class="history-date">${date}</div>`;
+    html += `<div class="history-goal">Objetivo: ${rec.form?.goal || rec.objetivo || '-'}</div>`;
+    html += `<div class="history-exp">Nível: ${rec.form?.levelUsed || rec.experiencia || '-'}</div>`;
     html += `</div>`;
   });
   containerEl.innerHTML = html;
