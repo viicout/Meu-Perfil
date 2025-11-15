@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TrainForge — Treinos com IA Local (Tabelas)</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <!-- TensorFlow.js CDN (IA local) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.8.0/dist/tf.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>TrainForge</h1>
+        <p class="subtitle">Treinos personalizados — IA local — Divisão automática por dias</p>
+      </div>
+      <div class="top-actions">
+        <button id="toggleTheme" title="Alternar tema">Tema</button>
+        <button id="exportAllBtn" title="Exportar histórico (JSON)">Exportar Histórico</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Form (left) -->
+      <section class="card form-card">
+        <h2>Avaliação</h2>
+
+        <label>Nome (opcional)
+          <input id="name" type="text" placeholder="Seu nome" />
+        </label>
+
+        <div class="row">
+          <label>Idade
+            <input id="age" type="number" min="10" max="120" />
+          </label>
+
+          <label>Peso (kg)
+            <input id="weight" type="number" min="20" max="400" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Tempo por sessão (min)
+            <input id="time" type="number" value="45" min="10" max="180" />
+          </label>
+
+          <label>Treinos/semana
+            <input id="sessions" type="number" value="3" min="1" max="7" />
+          </label>
+        </div>
+
+        <label>Objetivo
+          <select id="goal">
+            <option value="hipertrofia">Hipertrofia</option>
+            <option value="forca">Força</option>
+            <option value="resistencia">Resistência</option>
+            <option value="emagrecimento">Emagrecimento</option>
+            <option value="mobilidade">Mobilidade</option>
+          </select>
+        </label>
+
+        <label>Tipo de treino
+          <select id="type">
+            <option value="musculacao">Musculação</option>
+            <option value="calistenia">Calistenia</option>
+            <option value="misto">Misto</option>
+          </select>
+        </label>
+
+        <label>Nível
+          <select id="level">
+            <option value="auto">— Deixe a IA decidir —</option>
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+          </select>
+        </label>
+
+        <label>Grupos musculares para focar (marque 1+)</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="focus" value="peito" checked/> Peito</label>
+          <label class="chip"><input type="checkbox" name="focus" value="costas"/> Costas</label>
+          <label class="chip"><input type="checkbox" name="focus" value="pernas"/> Pernas</label>
+          <label class="chip"><input type="checkbox" name="focus" value="ombro"/> Ombro</label>
+          <label class="chip"><input type="checkbox" name="focus" value="braco"/> Braço</label>
+          <label class="chip"><input type="checkbox" name="focus" value="full"/> Treino completo</label>
+        </div>
+
+        <label>Limitações (opcional)
+          <input id="limitations" type="text" placeholder="ex: joelho, lombar..." />
+        </label>
+
+        <div class="info">
+          <small>Escolha "Nível = Auto" para que a IA local decida o nível com base nas respostas.</small>
+        </div>
+
+        <div class="actions">
+          <button id="generateBtn" class="primary">Gerar Treino (IA)</button>
+          <button id="resetBtn">Resetar</button>
+          <button id="printBtn">Imprimir / Salvar PDF</button>
+          <button id="downloadAllPdfBtn">Baixar PDF (todos os dias)</button>
+        </div>
+
+        <div id="trainProgress" class="progress" style="display:none">
+          <div id="trainProgressText">Treinando modelo local...</div>
+        </div>
+      </section>
+
+      <!-- Result (center) -->
+      <section class="card result-card">
+        <h2>Treinos — Divisão por dias</h2>
+        <div id="workoutBox" class="workout-box">
+          <p class="muted">Nenhum treino gerado ainda. Preencha a avaliação e clique em "Gerar Treino (IA)".</p>
+        </div>
+      </section>
+
+      <!-- History (right) -->
+      <section class="card history-card">
+        <h2>Histórico</h2>
+        <div id="historyList" class="history-list">
+          <p class="muted">Sem histórico.</p>
+        </div>
+        <div class="history-actions">
+          <button id="clearHistoryBtn">Limpar histórico</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>Observação: sugestões automáticas. Ajuste cargas conforme seu nível. Em caso de dúvida, consulte profissional.</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
